@@ -1,0 +1,33 @@
+version: '3.1'
+
+services:
+# first service is the mongo image
+  mongo:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ADMINUSERNAME:?err}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ADMINUSERNAME:?err}
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+
+# second service is the mongo express gui
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGODB_ADMINUSERNAME:?err}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_ADMINPASSWORD:?err}
+      ME_CONFIG_MONGODB_SERVER : mongo
+    depends_on: 
+      - mongo
+
+
+# declare local mongo driver
+volumes:
+  mongodb_data:
+    driver: local
