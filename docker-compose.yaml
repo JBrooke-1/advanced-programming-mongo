@@ -16,7 +16,7 @@ services:
 # second service is the mongo express gui
   mongo-express:
     image: mongo-express
-    restart: always
+    restart:  unless-stopped
     ports:
       - 8081:8081
     environment:
