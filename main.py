@@ -1,10 +1,23 @@
+# code to fix the path import error
+import sys, os
+dir_path = os.path.dirname(os.path.realpath(__file__))
+api_path = ""
+for dir in os.listdir(dir_path):
+    dir = os.path.join(dir_path, dir)
+    if ("api" in dir):
+        print(dir)
+        api_path = dir
+        break
+sys.path.insert(1, api_path)
+print(sys.path)
+
 import api.db as db
 import api.files as files
 import api.clean_data as clean
 
 if __name__ =='__main__':
     # insert initial data into db
-    all_df, df_dict = files.read_csv_files()
+    all_df, df_dict = files.read_csv_files(d_path="data/")
 
     # clean the data
     # remove all airport data that have a type closed
