@@ -24,3 +24,4 @@ data/
 json_data/
 *.db
 data_cleaned/
+.idea/
