@@ -56,17 +56,44 @@ def remove_closed_type(df, name, val="closed", col="type"):
         else:
             print(f"f{col} is not in {name}")
 
+
 # create a new df by frequency and add it to json
 # since python 3.6 you can define static typing
-def create_freq_col(airports_df : pd.DataFrame, freq_df:pd.DataFrame) -> pd.DataFrame:
+def create_freq_col(airports_df: pd.DataFrame, freq_df: pd.DataFrame) -> pd.DataFrame:
     # using all to loop through list
     if not (airports_df.empty or freq_df.empty):
         types = ["large_airport", "medium_airport", "small_airport"]
-        sml_airports: pd.DataFrame = airports_df.filter(items=["type", "name", "id"])
-        print(sml_airports.head(10))
+        countries = ["GB"]
+        useful_cols = [
+            "type",
+            "name",
+            "id",
+            "iso_country",
+            "latitude_deg",
+            "longitude_deg",
+        ]
+        sml_airports: pd.DataFrame = airports_df.filter(items=useful_cols)
+
+        # all airport data rows matching the search result
+        sml_airports = sml_airports[
+            (sml_airports["type"].isin(types))
+            & (sml_airports["iso_country"].isin(countries))
+        ]
+        print("\n return top 3 resutls: ", sml_airports.head(3), "\n")
+
+        # combine airport and frequency dataframe toproduce new dataframe
+        uk_sml_freqs: pd.DataFrame = pd.merge(
+            sml_airports, freq_df, left_on="id", right_on="airport_ref"
+        )
+        print("all cols of new df: ", uk_sml_freqs.columns)
+
+        # drop and rename some colulm names
+        uk_sml_freqs = uk_sml_freqs.drop(["id_x", "id_y"], axis=1)
+        uk_sml_freqs = uk_sml_freqs.rename(
+            columns={"type_x": "type", "type_y": "freq_type"},
+        )
+        print("testing uk sml airport frequency \n", uk_sml_freqs.head(5))
+        return uk_sml_freqs
     else:
-        pass # does nothing
-
-
-
+        pass  # does nothing
 

@@ -25,7 +25,7 @@ if __name__ == "__main__":
     df_dict["airports"] = files.remove_closed_type(df_dict, name="airports")
 
     # create a frequency column
-    df_dict["sml-airports-frequencies"] = files.create_freq_col(
+    df_dict["uk-airports-frequencies"] = files.create_freq_col(
         df_dict["airports"], df_dict["airport-frequencies"]
     )
     # check if the database has been prepopulated
