@@ -1,4 +1,4 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, database
 from dotenv import load_dotenv
 import os
 import files
@@ -13,38 +13,35 @@ HOST = os.environ.get("MONGO_HOST", "mongo")
 client = MongoClient("mongodb://localhost:27017/")
 
 # create a database called demo
-db = client["demo"]
+my_db = client["demo"]
 
 # added all collections need by database
-airports_collection = db["airports"]
-frequency_collection = db["airport-frequencies"]
-runways_collection = db["runway"]
-
-
-# insert initial data into db
-all_df, df_dict = files.read_csv_files()
-
-# clean the data
-# remove all airport data that have a type closed
-df_dict["airports"] = files.remove_closed_type(df_dict, name="airports")
+airports_collection = my_db["airports"]
+frequency_collection = my_db["airport-frequencies"]
+runways_collection = my_db["runway"]
 
 
 # debug all current collections
-for col in db.list_collection_names():
-    print(f"currently we have {col} in mongodb")
+def debug_collections(db):
+    if isinstance(db, database.Database):
+        for col in db.list_collection_names():
+            print(f"currently we have {col} in mongodb")
+    else:
+        print(f"{db} is not a database")
 
-print("\n##############\n")
 
 # insert into collection when it is not empty
-for key, val in df_dict.items():
-    collection = db.get_collection(key)
-    total_data = len(list(collection.find({})))
-    if total_data == 0:
-        collection.insert_many(val.to_dict("records"))
-    else:
-        print(f"currently in {collection.name} we have a total of {total_data} items")
-
-# convert existing dataframe into json
-print("\n##############\n")
-files.export_to_json(df_dict)
-
+def insert_df_to_db(db, df_dict):
+    if isinstance(db, database.Database):
+        for key, val in df_dict.items():
+            if isinstance(val, files.pd.DataFrame):
+                collection = db.get_collection(key)
+                total_data = len(list(collection.find({})))
+                if total_data == 0:
+                    collection.insert_many(val.to_dict("records"))
+                else:
+                    print(
+                        f"""currently in {collection.name}
+                         we have a total 
+                         of {total_data} items"""
+                    )
