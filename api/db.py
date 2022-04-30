@@ -30,13 +30,22 @@ def debug_collections(db):
         print(f"{db} is not a database")
 
 
+# delete collections
+def delete_collections(db: database.Database):
+    for col in db.list_collection_names():
+        mycol = db[col]
+        mycol.drop()
+        print(f"{col} has been dropped...")
+
+
 # insert into collection when it is not empty
-def insert_df_to_db(db, df_dict):
+def insert_df_to_db(db, df_dict: dict):
     if isinstance(db, database.Database):
         for key, val in df_dict.items():
             if isinstance(val, files.pd.DataFrame):
                 collection = db.get_collection(key)
                 total_data = len(list(collection.find({})))
+                print("total_data", total_data)
                 if total_data == 0:
                     collection.insert_many(val.to_dict("records"))
                 else:

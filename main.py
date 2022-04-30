@@ -28,12 +28,20 @@ if __name__ == "__main__":
     df_dict["uk-airports-frequencies"] = files.create_freq_col(
         df_dict["airports"], df_dict["airport-frequencies"]
     )
+
+    # delete db collections if already exist
+    db.delete_collections(db.my_db)
+
     # check if the database has been prepopulated
     db.debug_collections(db.my_db)
     print("\n##############\n")
 
     # insert cleaned data into database
     db.insert_df_to_db(db.my_db, df_dict)
+    print("\n##############\n")
+    
+    # check if the database has been prepopulated
+    db.debug_collections(db.my_db)
     print("\n##############\n")
 
     # convert existing dataframe into json
