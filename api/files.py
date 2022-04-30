@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 
 
-# helper function used to read and iterate through 
+# helper function used to read and iterate through
 def read_csv_files(d_path="../data"):
     dfs_only = []
     dfs_dict = {}
@@ -34,3 +34,24 @@ def export_to_json(df_dict, dir="../json_data/"):
         if isinstance(val, pd.DataFrame):
             val.to_json(file)
             print(f"{file} has been created successfully")
+
+
+# test if the 'closed' type is still in the databse
+def remove_closed_type(df, name, val="closed", col="type"):
+    df = df[name]
+    if isinstance(df, pd.DataFrame):
+        if col in df.columns:
+            # using drop function to drop  rows basing on column value
+            results = df[df[col] == val]
+            print(results)
+            df.drop(results.index, inplace=True)
+            count = len(results.index)  # total count of indexes
+            # print a test statement
+            print(
+                f"""{val} has been removed from 
+                the column {col}, 
+                a total of {count} values"""
+            )
+            return df
+        else:
+            print(f"f{col} is not in {name}")

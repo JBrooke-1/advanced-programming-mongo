@@ -10,7 +10,7 @@ PASSWORD = os.environ.get("MONGODB_ADMINPASSWORD", "pass")
 HOST = os.environ.get("MONGO_HOST", "mongo")
 
 # create connection with localhost
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient("mongodb://localhost:27017/")
 
 # create a database called demo
 db = client["demo"]
@@ -18,11 +18,16 @@ db = client["demo"]
 # added all collections need by database
 airports_collection = db["airports"]
 frequency_collection = db["airport-frequencies"]
-runways_collection =db["runway"]
+runways_collection = db["runway"]
 
 
 # insert initial data into db
 all_df, df_dict = files.read_csv_files()
+
+# clean the data
+# remove all airport data that have a type closed
+df_dict["airports"] = files.remove_closed_type(df_dict, name="airports")
+
 
 # debug all current collections
 for col in db.list_collection_names():
@@ -35,7 +40,7 @@ for key, val in df_dict.items():
     collection = db.get_collection(key)
     total_data = len(list(collection.find({})))
     if total_data == 0:
-        collection.insert_many(val.to_dict('records'))
+        collection.insert_many(val.to_dict("records"))
     else:
         print(f"currently in {collection.name} we have a total of {total_data} items")
 
