@@ -39,5 +39,7 @@ for key, val in df_dict.items():
     else:
         print(f"currently in {collection.name} we have a total of {total_data} items")
 
-
+# convert existing dataframe into json
+print("\n##############\n")
+files.export_to_json(df_dict)
 

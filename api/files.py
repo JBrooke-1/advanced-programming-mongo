@@ -20,10 +20,17 @@ def read_csv_files(d_path="../data"):
 
 
 # function to convert csv to json
-def export_to_json(df_dict):
-    if not os.path.isdir("../json_data"):
-        os.mkdir("../json_data")
+def export_to_json(df_dict, dir="../json_data/"):
+    if not os.path.isdir(dir):
+        os.mkdir(dir)
+
+    # make every key into dataframe
     for key in df_dict:
         val = df_dict[key]
-        file = f"./json_data/{key}.json"
-        val.to_json(file)
+        file = f"{dir}{key}.json"
+
+        # if the value is an instance of dataframe
+        # then convert it into json file
+        if isinstance(val, pd.DataFrame):
+            val.to_json(file)
+            print(f"{file} has been created successfully")
