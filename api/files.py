@@ -55,3 +55,18 @@ def remove_closed_type(df, name, val="closed", col="type"):
             return df
         else:
             print(f"f{col} is not in {name}")
+
+# create a new df by frequency and add it to json
+# since python 3.6 you can define static typing
+def create_freq_col(airports_df : pd.DataFrame, freq_df:pd.DataFrame) -> pd.DataFrame:
+    # using all to loop through list
+    if not (airports_df.empty or freq_df.empty):
+        types = ["large_airport", "medium_airport", "small_airport"]
+        sml_airports: pd.DataFrame = airports_df.filter(items=["type", "name", "id"])
+        print(sml_airports.head(10))
+    else:
+        pass # does nothing
+
+
+
+
