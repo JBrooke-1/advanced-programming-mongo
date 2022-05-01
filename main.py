@@ -1,26 +1,55 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import CENTER, LEFT, ttk
 from tkinter import messagebox
 from tkinter.tix import Tk
+from turtle import heading
 import ui
+from pymongo import MongoClient, collection
+
+root = tk.Tk()
+root.title("Advanced Programming")
 
 # closing function
 def on_closing():
     if messagebox.askokcancel("Quit", "Do you want to quit?"):
         root.destroy()
 
-
 # an event to close window
 def close_win(e, root: tk.Tk):
     root.destroy()
 
+# show all db results
+def query_collection_result(col_name="airports"):
+    # create connection with localhost
+    client = MongoClient("mongodb://localhost:27017/")
+    db = client["demo"]
+    coll:collection.Collection = db[col_name]
+    # turn columns into a dictionary
+    columns = list(coll.find_one({}).keys())
+    columns.remove("_id")
+    print (columns)
+    # render tree
+     # get current size of main window
+    curMainWindowHeight = root.winfo_height()
+    curMainWindowWidth = root.winfo_width()
+
+    tree = ttk.Treeview(root, columns=columns,show='headings')
+    for key in columns:
+        print(key)
+        tree.column(key,anchor=tk.NW)
+        tree.heading(f"{key}", text=str(key))
+
+    tree.grid(row=1, column=1, sticky=tk.EW)
+    # add a scrollbar
+    scrollbar_vert = ttk.Scrollbar(root, orient=tk.VERTICAL, command=tree.yview)
+    scrollbar_horz = ttk.Scrollbar(root, orient=tk.HORIZONTAL, command=tree.xview)
+    tree.configure(yscrollcommand=scrollbar_vert.set, xscrollcommand=scrollbar_horz)
+    scrollbar_vert.grid(row=1, column=2, sticky='ns')
+    scrollbar_horz.grid(row=2, column=1, sticky='we')
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    root.title("Advanced Programming")
-
     # create tinker window with fixed size as in widthxheight±x±y
-    window_width = 800
+    window_width = 1200
     window_height = 600
 
     # get the screen dimension -> from our desktop
@@ -43,7 +72,7 @@ if __name__ == "__main__":
     message.grid(column=1, row=0, sticky=tk.EW, padx=5, pady=5)
 
     # create a button to show airport data
-    all_data = ttk.Button(root, text="Show All Airport Data", command=ui.button_clicked)
+    all_data = ttk.Button(root, text="Show All Airport Data", command=query_collection_result)
     all_data.grid(column=0, row=1, sticky=tk.EW, padx=1, pady=1)
 
     # frequency data button
@@ -70,7 +99,6 @@ if __name__ == "__main__":
     # fix blur in ui
     try:
         from ctypes import windll
-
         windll.shcore.SetProcessDpiAwareness(1)
     finally:
         root.protocol("WM_DELETE_WINDOW", on_closing)
