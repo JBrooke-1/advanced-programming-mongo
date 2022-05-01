@@ -21,6 +21,18 @@ class PageWithDB(tk.Frame):
         columns.remove("_id")
         return columns
 
+    def get_all_records(self):
+        coll: collection.Collection = self.db[self.collection_name]
+        docs = coll.find({})[:200] # return top 200 results
+        rows = []
+        for item in docs:
+            val = list(item.values())
+            val = val[1:]
+            print(val)
+            rows.append(val)
+        print(rows)
+        return rows[1:]
+
 
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -58,30 +70,37 @@ class AirportPage(PageWithDB):
 
         # add horizontal and vertical scrollbar
         # scrollbar
-        scroll_bar = tk.Scrollbar(self)
-        scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
+        scroll_bar_v = tk.Scrollbar(self,  orient="vertical")
+        scroll_bar_v.pack(side=tk.RIGHT, fill=tk.Y)
 
-        scroll_bar = tk.Scrollbar(self, orient="horizontal")
-        scroll_bar.pack(side=tk.BOTTOM, fill=tk.X)
+        scroll_bar_h = tk.Scrollbar(self, orient="horizontal")
+        scroll_bar_h.pack(side=tk.BOTTOM, fill=tk.X)
 
         tree = ttk.Treeview(
             self,
             columns=columns,
             show="headings",
-            xscrollcommand=scroll_bar.set,
-            yscrollcommand=scroll_bar.set,
+            xscrollcommand=scroll_bar_h.set,
+            yscrollcommand=scroll_bar_v.set,
         )
+
+        # render table columns
         for key in columns:
             print(key)
             tree.column(
                 key, anchor=CENTER,
             )
             tree.heading(f"{key}", text=str(key))
-        
+
+        # render table values
+        records = self.get_all_records()
+        for r in records:
+            tree.insert('', tk.END, values=r)
+
         # pack the data and configuer the view
         tree.pack()
-        scroll_bar.config(command=tree.yview)
-        scroll_bar.config(command=tree.xview)
+        scroll_bar_v.config(command=tree.yview)
+        scroll_bar_h.config(command=tree.xview)
 
 
 class PageTwo(tk.Frame):
