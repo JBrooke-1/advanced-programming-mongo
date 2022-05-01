@@ -25,7 +25,7 @@ if __name__ == "__main__":
     root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
 
     # place a label on the root window
-    message = tk.Label(root, text="Airport Data Analysis")
+    message = tk.Label(root, text="Airport Data Analysis", font=('Times New Roman italic', 18))
     message.pack()
 
     # create a button and dummy function
