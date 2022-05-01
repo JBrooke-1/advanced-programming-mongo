@@ -32,43 +32,11 @@ class PageWithDB(tk.Frame):
             rows.append(val)
         print(rows)
         return rows[1:]
-
-
-class StartPage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Welcome to Airport Data", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
-
-        button = tk.Button(
-            self,
-            text="All Airport Data",
-            command=lambda: controller.show_frame(AirportPage),
-        )
-        button.pack()
-
-        button2 = tk.Button(
-            self, text="UK Airport Data", command=lambda: controller.show_frame(PageTwo)
-        )
-        button2.pack()
-
-
-class AirportPage(PageWithDB):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        # return to home page
-        button1 = tk.Button(
-            self, text="Back to Home", command=lambda: controller.show_frame(StartPage)
-        )
-        button1.pack()
-        label = tk.Label(self, text="All airport data", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
-        self.collection_name = "airports"
-
+    
+    def draw_table(self):
         # render all columns
         columns = self.get_col_names()
 
-        # add horizontal and vertical scrollbar
         # scrollbar
         scroll_bar_v = tk.Scrollbar(self,  orient="vertical")
         scroll_bar_v.pack(side=tk.RIGHT, fill=tk.Y)
@@ -101,6 +69,41 @@ class AirportPage(PageWithDB):
         tree.pack()
         scroll_bar_v.config(command=tree.yview)
         scroll_bar_h.config(command=tree.xview)
+
+
+class StartPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Welcome to Airport Data", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+
+        button = tk.Button(
+            self,
+            text="All Airport Data",
+            command=lambda: controller.show_frame(AirportPage),
+        )
+        button.pack()
+
+        button2 = tk.Button(
+            self, text="UK Airport Data", command=lambda: controller.show_frame(PageTwo)
+        )
+        button2.pack()
+
+
+class AirportPage(PageWithDB):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        # return to home page
+        button1 = tk.Button(
+            self, text="Back to Home", command=lambda: controller.show_frame(StartPage)
+        )
+        button1.pack()
+        label = tk.Label(self, text="All airport data", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+        self.collection_name = "airports"
+        # visualize airport data
+        self.draw_table()
+        
 
 
 class PageTwo(tk.Frame):
