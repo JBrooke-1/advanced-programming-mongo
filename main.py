@@ -25,13 +25,15 @@ if __name__ == "__main__":
     root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
 
     # place a label on the root window
-    message = tk.Label(root, text="Airport Data Analysis", font=('Times New Roman italic', 18))
+    message = tk.Label(root, text="Airport Data Analysis", font=('Times New Roman', 18))
     message.pack()
 
-    # create a button and dummy function
-    button = ttk.Button(root, text='Show All Data', command=ui.button_clicked)
-    button.pack()
-
+    # create a button to show airport data
+    ttk.Button(root, text='Show All Airport Data', command=ui.button_clicked).pack()
+    ttk.Button(root, text='show Frequency Data', command=ui.button_clicked).pack()
+    ttk.Button(root, text='Show Runway Data', command=ui.button_clicked).pack()
+    ttk.Button(root, text='Show UK Airport Frequency Data', command=ui.button_clicked).pack()
+    
     # create button to implement destroy()
     ttk.Button(root, text="Quit", command=root.destroy).pack()
 
