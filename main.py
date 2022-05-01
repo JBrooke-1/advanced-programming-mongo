@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
+from tkinter.tix import Tk
 import ui
 # import console
 
@@ -30,7 +32,19 @@ if __name__ == "__main__":
     button = ttk.Button(root, text='Show All Data', command=ui.button_clicked)
     button.pack()
 
+    # create button to implement destroy()
+    ttk.Button(root, text="Quit", command=root.destroy).pack()
 
+    # create event binding, press esc to exit
+    root.bind('<Escape>', lambda e: close_win(e, root= root))
+
+    #closing function
+    def on_closing():
+        if messagebox.askokcancel("Quit", "Do you want to quit?"):
+            root.destroy()
+    # an event to close window
+    def close_win(e, root:tk.Tk):
+        root.destroy()
 
     # fix blur in ui
     try:
@@ -38,4 +52,10 @@ if __name__ == "__main__":
 
         windll.shcore.SetProcessDpiAwareness(1)
     finally:
+        root.protocol("WM_DELETE_WINDOW", on_closing)
         root.mainloop()
+
+
+
+    
+    root.mainloop()
