@@ -23,7 +23,7 @@ class PageWithDB(tk.Frame):
 
     def get_all_records(self):
         coll: collection.Collection = self.db[self.collection_name]
-        docs = coll.find({})[:200] # return top 200 results
+        docs = coll.find({})[:200]  # return top 200 results
         rows = []
         for item in docs:
             val = list(item.values())
@@ -32,13 +32,13 @@ class PageWithDB(tk.Frame):
             rows.append(val)
         print(rows)
         return rows[1:]
-    
+
     def draw_table(self):
         # render all columns
         columns = self.get_col_names()
 
         # scrollbar
-        scroll_bar_v = tk.Scrollbar(self,  orient="vertical")
+        scroll_bar_v = tk.Scrollbar(self, orient="vertical")
         scroll_bar_v.pack(side=tk.RIGHT, fill=tk.Y)
 
         scroll_bar_h = tk.Scrollbar(self, orient="horizontal")
@@ -63,7 +63,7 @@ class PageWithDB(tk.Frame):
         # render table values
         records = self.get_all_records()
         for r in records:
-            tree.insert('', tk.END, values=r)
+            tree.insert("", tk.END, values=r)
 
         # pack the data and configuer the view
         tree.pack()
@@ -85,9 +85,23 @@ class StartPage(tk.Frame):
         button.pack()
 
         button2 = tk.Button(
-            self, text="UK Airport Data", command=lambda: controller.show_frame(PageTwo)
+            self, text="Runway Data", command=lambda: controller.show_frame(RunwayPage)
         )
         button2.pack()
+
+        freq_button = tk.Button(
+            self,
+            text="All Frequency Data",
+            command=lambda: controller.show_frame(FreqPage),
+        )
+        freq_button.pack()
+
+        uk_airport_freq_button = tk.Button(
+            self,
+            text="UK Small Medium Large Airport Frequency Data",
+            command=lambda: controller.show_frame(UKFreqPage),
+        )
+        uk_airport_freq_button.pack()
 
 
 class AirportPage(PageWithDB):
@@ -103,25 +117,49 @@ class AirportPage(PageWithDB):
         self.collection_name = "airports"
         # visualize airport data
         self.draw_table()
-        
 
 
-class PageTwo(tk.Frame):
+class RunwayPage(PageWithDB):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Page Two!!!", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
-
+        # return to home page
         button1 = tk.Button(
             self, text="Back to Home", command=lambda: controller.show_frame(StartPage)
         )
         button1.pack()
+        label = tk.Label(self, text="All Runway Data", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+        self.collection_name = "runways"
+        # visualize airport data
+        self.draw_table()
 
-        button2 = tk.Button(
-            self, text="Page One", command=lambda: controller.show_frame(AirportPage)
+class FreqPage(PageWithDB):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        # return to home page
+        button1 = tk.Button(
+            self, text="Back to Home", command=lambda: controller.show_frame(StartPage)
         )
-        button2.pack()
+        button1.pack()
+        label = tk.Label(self, text="Frequency for all airports", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+        self.collection_name = "airport-frequencies"
+        # visualize airport data
+        self.draw_table()
 
+class UKFreqPage(PageWithDB):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        # return to home page
+        button1 = tk.Button(
+            self, text="Back to Home", command=lambda: controller.show_frame(StartPage)
+        )
+        button1.pack()
+        label = tk.Label(self, text="UK Small Medium Large Airport Frequency Data", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+        self.collection_name = "uk-airports-frequencies"
+        # visualize airport data
+        self.draw_table()
 
 class MainUI(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -136,7 +174,7 @@ class MainUI(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, AirportPage, PageTwo):
+        for F in (StartPage, AirportPage, RunwayPage, FreqPage, UKFreqPage):
 
             frame = F(container, self)
 
