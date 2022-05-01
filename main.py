@@ -1,49 +1,41 @@
-# code to fix the path import error
-import sys, os
-
-dir_path = os.path.dirname(os.path.realpath(__file__))
-api_path = ""
-for dir in os.listdir(dir_path):
-    dir = os.path.join(dir_path, dir)
-    if "api" in dir:
-        print(dir)
-        api_path = dir
-        break
-sys.path.insert(1, api_path)
-print(sys.path)
-
-import api.db as db
-import api.files as files
-import api.clean_data as clean
+import tkinter as tk
+from tkinter import ttk
+import ui
+# import console
 
 if __name__ == "__main__":
-    # insert initial data into db
-    all_df, df_dict = files.read_csv_files(d_path="data/")
+    root = tk.Tk()
+    root.title("Advanced Programming")
 
-    # clean the data
-    # remove all airport data that have a type closed
-    df_dict["airports"] = files.remove_closed_type(df_dict, name="airports")
+    # create tinker window with fixed size as in widthxheight±x±y
+    window_width = 800
+    window_height = 600
 
-    # create a frequency column
-    df_dict["uk-airports-frequencies"] = files.create_freq_col(
-        df_dict["airports"], df_dict["airport-frequencies"]
-    )
+    # get the screen dimension -> from our desktop
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
 
-    # delete db collections if already exist
-    db.delete_collections(db.my_db)
+    # find the center point of our desktop
+    center_x = int(screen_width/2 - window_width / 2)
+    center_y = int(screen_height/2 - window_height / 2)
 
-    # check if the database has been prepopulated
-    db.debug_collections(db.my_db)
-    print("\n##############\n")
+    # set the position of the window to the center of the screen
+    root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
 
-    # insert cleaned data into database
-    db.insert_df_to_db(db.my_db, df_dict)
-    print("\n##############\n")
-    
-    # check if the database has been prepopulated
-    db.debug_collections(db.my_db)
-    print("\n##############\n")
+    # place a label on the root window
+    message = tk.Label(root, text="Airport Data Analysis")
+    message.pack()
 
-    # convert existing dataframe into json
-    print("\n##############\n")
-    files.export_to_json(df_dict)
+    # create a button and dummy function
+    button = ttk.Button(root, text='Show All Data', command=ui.button_clicked)
+    button.pack()
+
+
+
+    # fix blur in ui
+    try:
+        from ctypes import windll
+
+        windll.shcore.SetProcessDpiAwareness(1)
+    finally:
+        root.mainloop()
