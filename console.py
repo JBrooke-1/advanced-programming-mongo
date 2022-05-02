@@ -14,7 +14,7 @@ print(sys.path)
 
 import api.db as db
 import api.files as files
-import api.clean_data as clean
+import api.correlation_analysis as clean
 
 if __name__ == "__main__":
     # insert initial data into db
