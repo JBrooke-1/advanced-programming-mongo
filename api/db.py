@@ -98,3 +98,18 @@ def find_small_airport_average(collection_name: str, search_params: dict) -> flo
     result = list(my_collection.aggregate(query))
     return result[0]["average"]
 
+def find_big_airport_average_above100(collection_name: str, search_params: dict) -> float:
+    query = [
+        
+            {"$match": {"$and" :[
+                        {"type": "large_airport"}, 
+                        {"frequency_mhz": {"$gt" : 100}}
+                        ]}
+            },
+            {"$group": {"_id": "$type", "average": {"$avg": "$frequency_mhz"}}},
+        
+    ]
+    my_collection: collection.Collection = my_db[collection_name]
+    result = list(my_collection.aggregate(query))
+    return result[0]["average"]
+
