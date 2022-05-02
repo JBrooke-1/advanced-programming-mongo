@@ -99,7 +99,6 @@ def create_freq_col(airports_df: pd.DataFrame, freq_df: pd.DataFrame, dir:str="d
 
         # convert such dataframe to csv in data folder
         parent_file = get_parent_folder(dir).joinpath("uk-airports-frequencies.csv")
-        print(parent_file)
         uk_sml_freqs.to_csv(parent_file, index=False)
         return uk_sml_freqs
     else:
@@ -107,9 +106,7 @@ def create_freq_col(airports_df: pd.DataFrame, freq_df: pd.DataFrame, dir:str="d
 
 def get_parent_folder(dir) -> Path:
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    print(dir_path)
     parent_dir = Path(str(dir_path)).parent
     parent_full_dir = parent_dir.joinpath(dir)
-    print("path: ", parent_full_dir)
     return Path(parent_full_dir)
 
