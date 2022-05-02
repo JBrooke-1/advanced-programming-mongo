@@ -20,19 +20,22 @@ def read_csv_files(d_path="../data"):
 
 
 # function to convert csv to json
-def export_to_json(df_dict, dir="../json_data/"):
+def export_to_json(df_dict, dir="json_data"):
     if not os.path.isdir(dir):
         os.mkdir(dir)
 
     # make every key into dataframe
     for key in df_dict:
         val = df_dict[key]
-        file = f"{dir}{key}.json"
+        file = f"{key}.json"
 
         # if the value is an instance of dataframe
         # then convert it into json file
         if isinstance(val, pd.DataFrame):
-            val.to_json(file)
+            target_dir = get_parent_folder(dir)
+            target_path = target_dir.joinpath(file)
+            print(target_path)
+            val.to_json(target_path)
             print(f"{file} has been created successfully")
 
 
@@ -59,7 +62,7 @@ def remove_closed_type(df, name, val="closed", col="type"):
 
 # create a new df by frequency and add it to json
 # since python 3.6 you can define static typing
-def create_freq_col(airports_df: pd.DataFrame, freq_df: pd.DataFrame, dir:str="../data") -> pd.DataFrame:
+def create_freq_col(airports_df: pd.DataFrame, freq_df: pd.DataFrame, dir:str="data") -> pd.DataFrame:
     # using all to loop through list
     if not (airports_df.empty or freq_df.empty):
         types = ["large_airport", "medium_airport", "small_airport"]
@@ -95,8 +98,18 @@ def create_freq_col(airports_df: pd.DataFrame, freq_df: pd.DataFrame, dir:str=".
         print("testing uk sml airport frequency \n", uk_sml_freqs.head(5))
 
         # convert such dataframe to csv in data folder
-        uk_sml_freqs.to_csv(dir, index=False)
+        parent_file = get_parent_folder(dir).joinpath("uk-airports-frequencies.csv")
+        print(parent_file)
+        uk_sml_freqs.to_csv(parent_file, index=False)
         return uk_sml_freqs
     else:
-        pass  # does nothing
+        pass 
+
+def get_parent_folder(dir) -> Path:
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    print(dir_path)
+    parent_dir = Path(str(dir_path)).parent
+    parent_full_dir = parent_dir.joinpath(dir)
+    print("path: ", parent_full_dir)
+    return Path(parent_full_dir)
 
