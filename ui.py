@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 import tkinter as tk
 from tkinter import CENTER, LEFT, ttk
 from pymongo import MongoClient, collection, database

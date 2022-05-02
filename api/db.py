@@ -1,4 +1,5 @@
-from pymongo import MongoClient, database
+from unicodedata import category
+from pymongo import MongoClient, database, collection, cursor, DESCENDING, ASCENDING
 from dotenv import load_dotenv
 import os
 import files
@@ -54,3 +55,41 @@ def insert_df_to_db(db, df_dict: dict):
                          we have a total 
                          of {total_data} items"""
                     )
+
+
+# get all results from a particular database
+def find_in_db(
+    collection_name: str, search_params: dict = {}, fields_to_return: dict = {}
+) -> cursor.Cursor:
+    my_collection: collection.Collection = my_db[collection_name]
+    result = my_collection.find(search_params, fields_to_return)
+    return result
+
+def find_maxmin_val(collection_name: str,
+                    field:str,
+                    search_params: dict = {},
+                    fields_to_return: dict = {},
+                    is_ascending:bool=False) -> float:
+    my_collection: collection.Collection = my_db[collection_name]
+    
+    if not is_ascending:
+        result = my_collection.find_one(search_params, fields_to_return, sort=[(field, DESCENDING)])
+    else:
+        result = my_collection.find_one(search_params, fields_to_return,sort=[(field, ASCENDING)])
+    
+    return result[field]
+
+def find_average(collection_name: str,
+                field:str, category:str,
+                search_params: dict = {}) -> float :
+    query = [{
+        "$group" :{
+        "_id" : "$small_airport",
+        "average" : {"$avg": "$frequency_mhz"}
+        }
+    }]
+    my_collection: collection.Collection = my_db[collection_name]
+    result = my_collection.aggregate(query)
+    for i in result:
+        print(i)
+    return result
