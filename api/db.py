@@ -65,31 +65,36 @@ def find_in_db(
     result = my_collection.find(search_params, fields_to_return)
     return result
 
-def find_maxmin_val(collection_name: str,
-                    field:str,
-                    search_params: dict = {},
-                    fields_to_return: dict = {},
-                    is_ascending:bool=False) -> float:
+
+def find_maxmin_val(
+    collection_name: str,
+    field: str,
+    search_params: dict = {},
+    fields_to_return: dict = {},
+    is_ascending: bool = False,
+) -> float:
     my_collection: collection.Collection = my_db[collection_name]
-    
+
     if not is_ascending:
-        result = my_collection.find_one(search_params, fields_to_return, sort=[(field, DESCENDING)])
+        result = my_collection.find_one(
+            search_params, fields_to_return, sort=[(field, DESCENDING)]
+        )
     else:
-        result = my_collection.find_one(search_params, fields_to_return,sort=[(field, ASCENDING)])
-    
+        result = my_collection.find_one(
+            search_params, fields_to_return, sort=[(field, ASCENDING)]
+        )
+
     return result[field]
 
-def find_average(collection_name: str,
-                field:str, category:str,
-                search_params: dict = {}) -> float :
-    query = [{
-        "$group" :{
-        "_id" : "$small_airport",
-        "average" : {"$avg": "$frequency_mhz"}
-        }
-    }]
+
+def find_small_airport_average(collection_name: str, search_params: dict) -> float:
+    query = [
+        
+            {"$match": {"type": "small_airport"}},
+            {"$group": {"_id": "$type", "average": {"$avg": "$frequency_mhz"}}},
+        
+    ]
     my_collection: collection.Collection = my_db[collection_name]
-    result = my_collection.aggregate(query)
-    for i in result:
-        print(i)
-    return result
+    result = list(my_collection.aggregate(query))
+    return result[0]["average"]
+
