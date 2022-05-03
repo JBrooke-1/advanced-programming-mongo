@@ -32,28 +32,6 @@ def analyze_freq_correlation(file_path="data/uk-airports-frequencies.csv"):
         hue="type",
         data=freq_df_original,
     )
-    # sns.jointplot(
-    #     x="codes",
-    #     y="frequency_mhz",
-    #     palette="Set1",
-    #     kind="reg",
-    #     data=freq_df_original,
-    # )
-    # sns.pairplot(data = freq_df_original,
-    # hue = "type",
-    # size =3,
-    # y_vars = ["frequency_mhz"],
-    # x_vars = ["type"],
-    #  markers=["o", "s", "D"]
-    #  )
-    # g = sns.PairGrid(cleaned_freq_df)
-    # g.map_diag(sns.histplot)
-    # g.map_offdiag(sns.scatterplot)
-    # g = sns.FacetGrid(freq_df_original, col="type", hue="type")
-    # g.map(sns.kdeplot,"frequency_mhz",
-    #             palette="ch:r=-.5,l=.75",)
-    # g.map(sns.pointplot,"type", "frequency_mhz", order=["small_airport", "medium_airport", "large_airport"],
-    #             palette="ch:r=-.5,l=.75",)
     plt.show()
 
 
