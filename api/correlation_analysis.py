@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import api.files as files
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
+import warnings
+warnings.filterwarnings('ignore')
 
 def analyze_freq_correlation(file_path="data/uk-airports-frequencies.csv") -> Figure:
     # clean df

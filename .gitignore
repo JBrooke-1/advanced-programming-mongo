@@ -25,3 +25,6 @@ json_data/
 *.db
 data_cleaned/
 .idea/
+
+#jypter notebook
+*.ipynb_checkpoints
