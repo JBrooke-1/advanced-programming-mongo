@@ -65,7 +65,6 @@ pywinpty @ file:///C:/ci_310/pywinpty_1644230983541/work/target/wheels/pywinpty-
 pyzmq @ file:///C:/ci/pyzmq_1638435182681/work
 regex @ file:///C:/ci/regex_1648429722774/work
 scipy==1.7.3
-seaborn==0.11.2
 Send2Trash @ file:///tmp/build/80754af9/send2trash_1632406701022/work
 six @ file:///tmp/build/80754af9/six_1644875935023/work
 soupsieve @ file:///tmp/build/80754af9/soupsieve_1636706018808/work
@@ -148,7 +147,6 @@ pywinpty @ file:///C:/ci_310/pywinpty_1644230983541/work/target/wheels/pywinpty-
 pyzmq @ file:///C:/ci/pyzmq_1638435182681/work
 regex @ file:///C:/ci/regex_1648429722774/work
 scipy==1.7.3
-seaborn==0.11.2
 Send2Trash @ file:///tmp/build/80754af9/send2trash_1632406701022/work
 six @ file:///tmp/build/80754af9/six_1644875935023/work
 soupsieve @ file:///tmp/build/80754af9/soupsieve_1636706018808/work
