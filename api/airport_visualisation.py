@@ -1,6 +1,7 @@
-import db
+import api.db as db
 import matplotlib.pyplot as plt
 import numpy as np
+
 
 def draw_small_airport_freq():
     # find all smallairport from the uk airport db
@@ -34,7 +35,7 @@ def draw_small_airport_freq():
     print(average)
 
     # draw the final result
-    draw_result(
+    return draw_result(
         small_uk_airports,
         min_val=small_uk_airports_min,
         max_val=small_uk_airports_max,
@@ -54,7 +55,6 @@ def draw_big_airport_freq():
         search_params=search_params,
         fields_to_return={"airport_ref": 1, "frequency_mhz": 1, "name": 1, "_id": 0},
     )
-
 
     big_uk_airports_max = db.find_maxmin_val(
         collection_name=collection_name,
@@ -85,12 +85,12 @@ def draw_big_airport_freq():
     print(average)
 
     # draw the final result
-    draw_result(
+    return draw_result(
         big_uk_airports,
         min_val=big_uk_airports_min,
         max_val=big_uk_airports_max,
         average=average,
-        title="communication frequencies used by uk's big airports (more than 100)"
+        title="communication frequencies used by uk's big airports (more than 100)",
     )
 
 
@@ -103,23 +103,23 @@ def draw_result(query_result, min_val, max_val, average, title, bin_mod=10):
     bins = int(total_width) // bin_width
 
     # calculated best number of bins needed
-    data_list = [result["frequency_mhz"] for result in list(query_result) if result["frequency_mhz"] is not None]
+    data_list = [
+        result["frequency_mhz"]
+        for result in list(query_result)
+        if result["frequency_mhz"] is not None
+    ]
 
     # sort the data from min to max
     data_list.sort()
     data_arr = np.array(data_list)
     data_list = reject_outliers(data_arr, m=2).tolist()
-    my_bins = np.histogram_bin_edges(data_list, bins='auto', range=(min_val, max_val))
+    my_bins = np.histogram_bin_edges(data_list, bins="auto", range=(min_val, max_val))
 
-   
     # visualize the historgram
     counts, edges, bars = plt.hist(
-        x=data_list,
-        bins=my_bins,
-        edgecolor="yellow",
-        color="green",
+        x=data_list, bins=my_bins, edgecolor="yellow", color="green",
     )
-    plt.xlim(data_list[0]-bin_mod, data_list[-1] +bin_mod)
+    plt.xlim(data_list[0] - bin_mod, data_list[-1] + bin_mod)
     plt.bar_label(bars)
 
     # draw an average line
@@ -141,14 +141,16 @@ def draw_result(query_result, min_val, max_val, average, title, bin_mod=10):
     # add label to the table
     plt.xlabel("Frequencies (mhz)")
     plt.ylabel("Numbers of counts")
-    plt.show()
+    return plt.figure()
+
 
 # a function to reject outliners
-def reject_outliers(data, m = 2.):
+def reject_outliers(data, m=2.0):
     d = np.abs(data - np.median(data))
     mdev = np.median(d)
-    s = d/mdev if mdev else 0.
-    return data[s<m]
+    s = d / mdev if mdev else 0.0
+    return data[s < m]
+
 
 draw_big_airport_freq()
 draw_small_airport_freq()

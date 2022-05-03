@@ -1,8 +1,54 @@
 import tkinter as tk
 from tkinter import CENTER, LEFT, ttk
 from pymongo import MongoClient, collection, database
+import api.airport_visualisation as airport_visuals, api.correlation_analysis as freq_col
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 LARGE_FONT = ("Verdana", 12)
+# class that works with graphs
+class CorrelationAnalysis(tk.Frame):
+    def __init__(self, parent, controller):
+
+        # greeting page
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Frequency Correlation", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+
+        # return to home page
+        button1 = tk.Button(
+            self, text="Back to Home", command=lambda: controller.show_frame(StartPage)
+        )
+        button1.pack()
+        label = tk.Label(self, text="All airport data", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+
+        # show graphs
+        fig = freq_col.analyze_freq_correlation()
+        canvas = FigureCanvasTkAgg(fig, master=self)  # A tk.DrawingArea.
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+
+
+# class that works with graphs
+class Small_AirPort_Data_Visual(tk.Frame):
+    def __init__(self, parent, controller):
+
+        # greeting page
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Small Airport Frequency", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+
+        # return to home page
+        button1 = tk.Button(
+            self, text="Back to Home", command=lambda: controller.show_frame(StartPage)
+        )
+        button1.pack()
+
+        # show graphs
+        fig = airport_visuals.draw_small_airport_freq()
+        canvas = FigureCanvasTkAgg(fig, master=self)  # A tk.DrawingArea.
+        canvas.draw()
+        canvas.get_tk_widget().pack()
 
 
 class PageWithDB(tk.Frame):
@@ -102,6 +148,20 @@ class StartPage(tk.Frame):
         )
         uk_airport_freq_button.pack()
 
+        small_freq_button = tk.Button(
+            self,
+            text="Small Airport Frequencies",
+            command=lambda: controller.show_frame(Small_AirPort_Data_Visual),
+        )
+        small_freq_button.pack()
+
+        corr_freq_button = tk.Button(
+            self,
+            text="Correlation Between Airports and Frequencies",
+            command=lambda: controller.show_frame(CorrelationAnalysis),
+        )
+        corr_freq_button.pack()
+
 
 class AirportPage(PageWithDB):
     def __init__(self, parent, controller):
@@ -132,6 +192,7 @@ class RunwayPage(PageWithDB):
         # visualize airport data
         self.draw_table()
 
+
 class FreqPage(PageWithDB):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -146,6 +207,7 @@ class FreqPage(PageWithDB):
         # visualize airport data
         self.draw_table()
 
+
 class UKFreqPage(PageWithDB):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -154,11 +216,14 @@ class UKFreqPage(PageWithDB):
             self, text="Back to Home", command=lambda: controller.show_frame(StartPage)
         )
         button1.pack()
-        label = tk.Label(self, text="UK Small Medium Large Airport Frequency Data", font=LARGE_FONT)
+        label = tk.Label(
+            self, text="UK Small Medium Large Airport Frequency Data", font=LARGE_FONT
+        )
         label.pack(pady=10, padx=10)
         self.collection_name = "uk-airports-frequencies"
         # visualize airport data
         self.draw_table()
+
 
 class MainUI(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -173,7 +238,15 @@ class MainUI(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, AirportPage, RunwayPage, FreqPage, UKFreqPage):
+        for F in (
+            StartPage,
+            AirportPage,
+            RunwayPage,
+            FreqPage,
+            UKFreqPage,
+            CorrelationAnalysis,
+            Small_AirPort_Data_Visual,
+        ):
 
             frame = F(container, self)
 
