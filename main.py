@@ -1,9 +1,7 @@
 import tkinter as tk
-from tkinter import CENTER, LEFT, ttk
 from tkinter import messagebox
-from pymongo import MongoClient, collection
 import ui
-
+import subprocess
 import sys, os
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -17,6 +15,9 @@ for dir in os.listdir(dir_path):
 sys.path.insert(1, api_path)
 print(sys.path)
 
+# nothing runs till subprocess runs
+p = subprocess.run("python console.py", shell=True)
+print("return code: ", p.returncode)
 
 root = ui.MainUI()
 root.title("Advanced Programming")

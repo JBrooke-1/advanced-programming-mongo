@@ -1,20 +1,22 @@
 # code to fix the path import error
 import sys, os
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-api_path = ""
-for dir in os.listdir(dir_path):
-    dir = os.path.join(dir_path, dir)
-    if "api" in dir:
-        print(dir)
-        api_path = dir
-        break
-sys.path.insert(1, api_path)
-print(sys.path)
+def append_api_dir(__file__):
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    api_path = ""
+    for dir in os.listdir(dir_path):
+        dir = os.path.join(dir_path, dir)
+        if "api" in dir:
+            print(dir)
+            api_path = dir
+            break
+    sys.path.insert(1, api_path)
+    print(sys.path)
+
+append_api_dir(__file__)
 
 import api.db as db
 import api.files as files
-import api.correlation_analysis as clean
 
 if __name__ == "__main__":
     # insert initial data into db
