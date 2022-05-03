@@ -15,3 +15,16 @@ on Mac OS / Linux
 
 On Windows
 `venv\Scripts\activate`
+
+
+### Run Programme
+Method 1: 
+activate conda environment as above, then run `python main.py` in current folder
+
+Method 2: 
+1. Set up development environment in jupyter notebook, using command 
+`python -m ipykernel install --user --name=dev`
+2. Go to Jupyter notebook, open up the `Run_Programme.ipynb`
+3. Select 'dev' to be your kernel
+3. Press run to run the project
+
