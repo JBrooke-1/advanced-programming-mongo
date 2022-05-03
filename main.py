@@ -4,6 +4,20 @@ from tkinter import messagebox
 from pymongo import MongoClient, collection
 import ui
 
+import sys, os
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
+api_path = ""
+for dir in os.listdir(dir_path):
+    dir = os.path.join(dir_path, dir)
+    if "api" in dir:
+        print(dir)
+        api_path = dir
+        break
+sys.path.insert(1, api_path)
+print(sys.path)
+
+
 root = ui.MainUI()
 root.title("Advanced Programming")
 

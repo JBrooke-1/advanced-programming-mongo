@@ -2,7 +2,7 @@ from unicodedata import category
 from pymongo import MongoClient, database, collection, cursor, DESCENDING, ASCENDING
 from dotenv import load_dotenv
 import os
-import files
+import api.files as files
 
 load_dotenv()
 MONGO_PORT = int(os.environ.get("MONGO_PORT", 27017))

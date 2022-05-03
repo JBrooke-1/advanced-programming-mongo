@@ -1,10 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import files
+import api.files as files
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
-def analyze_freq_correlation(file_path="data/uk-airports-frequencies.csv"):
+def analyze_freq_correlation(file_path="data/uk-airports-frequencies.csv") -> Figure:
     # clean df
     abs_file_path = files.get_parent_folder(file_path)
     freq_df: pd.DataFrame = pd.read_csv(abs_file_path)
@@ -22,16 +24,21 @@ def analyze_freq_correlation(file_path="data/uk-airports-frequencies.csv"):
     print("pearson correlation matrix \n", correlations_pearson, "\n")
 
     # visualize correlation in matplotlib
-    sns.set_theme(style="darkgrid")
-    sns.lmplot(
-        x="codes",
-        y="frequency_mhz",
-        markers=["o", "s", "D"],
-        palette="Set1",
-        hue="type",
-        data=freq_df_original,
+    return generate_plot(freq_df_original)
+
+
+def generate_plot(freq_df_original: pd.DataFrame):
+    figure = plt.Figure(figsize=(6, 5), dpi=100)
+    colors = {
+        "small_airport": "red",
+        "medium_airport": "blue",
+        "large_airport": "green",
+    }
+    ax = figure.add_subplot(111)  # create 1 by 1 grid
+    plot = ax.scatter(
+        freq_df_original["type"],
+        freq_df_original["frequency_mhz"],
+        c=freq_df_original["type"].map(colors),
+        label=freq_df_original["type"],
     )
-    plt.show()
-
-
-analyze_freq_correlation()
+    return figure
