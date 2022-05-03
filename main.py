@@ -65,48 +65,6 @@ def start_window():
         root.protocol("WM_DELETE_WINDOW", on_closing)
         root.mainloop()
 
-
-# function to create main window
-def create_button_frame(container):
-
-    frame = ttk.Frame(container)
-
-    frame.columnconfigure(0, weight=1)
-
-    # create a button to show airport data
-    all_data = ttk.Button(
-        root, text="Show All Airport Data", command=query_collection_result
-    )
-    all_data.grid(column=0, row=1, sticky=tk.EW, padx=1, pady=1)
-
-    # frequency data button
-    freq_data = ttk.Button(
-        root, text="show Frequency Data", command=query_collection_result
-    )
-    freq_data.grid(column=0, row=2, sticky=tk.EW, padx=1, pady=1)
-
-    # runway data button
-    runway_data = ttk.Button(
-        root, text="Show Runway Data", command=query_collection_result
-    )
-    runway_data.grid(column=0, row=3, sticky=tk.EW, padx=1, pady=1)
-
-    # uk data
-    uk_airport_data = ttk.Button(
-        root, text="Show UK Airport Frequency Data", command=query_collection_result
-    )
-    uk_airport_data.grid(column=0, row=4, sticky=tk.EW, padx=1, pady=1)
-
-    # create button to implement destroy()
-    quit_button = ttk.Button(root, text="Quit", command=on_closing)
-    quit_button.grid(column=0, row=5, sticky=tk.EW, padx=1, pady=1)
-
-    for widget in frame.winfo_children():
-        widget.grid(padx=0, pady=3)
-
-    return frame
-
-
 if __name__ == "__main__":
 
     create_main_window()

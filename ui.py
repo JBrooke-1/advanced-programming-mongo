@@ -5,6 +5,18 @@ import api.airport_visualisation as airport_visuals, api.correlation_analysis as
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 LARGE_FONT = ("Verdana", 12)
+
+# draw plots
+def show_small_airport():
+    airport_visuals.draw_small_airport_freq()
+    airport_visuals.plt.show()
+
+
+def show_big_airport():
+    airport_visuals.draw_big_airport_freq()
+    airport_visuals.plt.show()
+
+
 # class that works with graphs
 class CorrelationAnalysis(tk.Frame):
     def __init__(self, parent, controller):
@@ -46,6 +58,28 @@ class Small_AirPort_Data_Visual(tk.Frame):
 
         # show graphs
         fig = airport_visuals.draw_small_airport_freq()
+        canvas = FigureCanvasTkAgg(fig, master=self)  # A tk.DrawingArea.
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+
+
+# class that works with graphs
+class Big_AirPort_Data_Visual(tk.Frame):
+    def __init__(self, parent, controller):
+
+        # greeting page
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Large Airport Frequency", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+
+        # return to home page
+        button1 = tk.Button(
+            self, text="Back to Home", command=lambda: controller.show_frame(StartPage)
+        )
+        button1.pack()
+
+        # show graphs
+        fig = airport_visuals.draw_big_airport_freq()
         canvas = FigureCanvasTkAgg(fig, master=self)  # A tk.DrawingArea.
         canvas.draw()
         canvas.get_tk_widget().pack()
@@ -155,6 +189,13 @@ class StartPage(tk.Frame):
         )
         small_freq_button.pack()
 
+        big_freq_button = tk.Button(
+            self,
+            text="Show Large UK Airport Frequencies",
+            command=lambda:controller.show_frame(Big_AirPort_Data_Visual),
+        )
+        big_freq_button.pack()
+
         corr_freq_button = tk.Button(
             self,
             text="Correlation Between Airports and Frequencies",
@@ -246,6 +287,7 @@ class MainUI(tk.Tk):
             UKFreqPage,
             CorrelationAnalysis,
             Small_AirPort_Data_Visual,
+            Big_AirPort_Data_Visual,
         ):
 
             frame = F(container, self)

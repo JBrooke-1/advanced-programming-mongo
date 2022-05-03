@@ -35,7 +35,7 @@ def draw_small_airport_freq():
     print(average)
 
     # draw the final result
-    return draw_result(
+    return draw_result_and_return(
         small_uk_airports,
         min_val=small_uk_airports_min,
         max_val=small_uk_airports_max,
@@ -85,7 +85,7 @@ def draw_big_airport_freq():
     print(average)
 
     # draw the final result
-    return draw_result(
+    return draw_result_and_return(
         big_uk_airports,
         min_val=big_uk_airports_min,
         max_val=big_uk_airports_max,
@@ -141,7 +141,6 @@ def draw_result(query_result, min_val, max_val, average, title, bin_mod=10):
     # add label to the table
     plt.xlabel("Frequencies (mhz)")
     plt.ylabel("Numbers of counts")
-    return plt.figure()
 
 
 # a function to reject outliners
@@ -152,6 +151,51 @@ def reject_outliers(data, m=2.0):
     return data[s < m]
 
 
-draw_big_airport_freq()
-draw_small_airport_freq()
+def draw_result_and_return(query_result, min_val, max_val, average, title, bin_mod=10):
 
+    # calculated best number of bins needed
+    data_list = [
+        result["frequency_mhz"]
+        for result in list(query_result)
+        if result["frequency_mhz"] is not None
+    ]
+
+    # sort the data from min to max
+    data_list.sort()
+    data_arr = np.array(data_list)
+    data_list = reject_outliers(data_arr, m=2).tolist()
+    my_bins = np.histogram_bin_edges(data_list, bins="auto", range=(min_val, max_val))
+
+    # visualize the historgram
+
+    fig = plt.Figure(figsize=(10,8))
+    ax = fig.add_subplot(111)  # create 1 by 1 grid
+
+    counts, edges, bars = ax.hist(
+        x=data_list, bins=my_bins, edgecolor="yellow", color="green",
+    )
+    ax.set_xlim(data_list[0] - bin_mod, data_list[-1] + bin_mod)
+    ax.bar_label(bars)
+
+    # draw an average line
+    min_ylim, max_ylim = ax.set_ylim()
+    ax.axvline(average, color="r", linestyle="dashed", linewidth=1)
+    ax.set_title(title)
+    ax.text(average, max_ylim * 0.8, "Mean: {:.2f}".format(average), color="r")
+
+    # calculate and draw median
+    median = np.median(np.array(data_list))
+    ax.axvline(median, color="b", linestyle="dashed", linewidth=1)
+    ax.text(median, max_ylim * 0.5, "Median: {:.2f}".format(median), color="b")
+
+    # calculate and draw mode
+    mode = max(set(data_list), key=data_list.count)
+    ax.plot(mode, max_ylim * 0.2, marker="o", markersize=10, markeredgecolor="red")
+    ax.text(mode, max_ylim * 0.2, "Mode: {:.2f}".format(mode), color="k")
+
+    # add label to the table
+    ax.set_xlabel("Frequencies (mhz)")
+    ax.set_ylabel("Numbers of counts")
+
+    # return result
+    return fig
